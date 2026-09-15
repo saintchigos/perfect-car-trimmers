@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ shop_name }} · Car Roof Lining Repair, Midrand{% endblock %}</title>
+    <meta name="description" content="Car roof lining & headliner repair in Midrand. Book a slot online, get an instant quote, message us directly on WhatsApp.">
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    <meta name="theme-color" content="#0a1e42">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-workshop sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'bookings:home' %}">
+                <span class="brand-mark-dot"></span>
+                <span>{{ shop_name }}</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bookings:home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bookings:gallery' %}">Our Work</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bookings:home' %}#visit-us">Find Us</a></li>
+                    {% if request.user.is_staff %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bookings:staff_dashboard' %}">Staff Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bookings:staff_gallery' %}">Manage Photos</a></li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-amber px-3 ms-lg-2 mt-2 mt-lg-0" href="{% url 'bookings:book' %}">Book a Slot</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-workshop py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h6 class="text-white mb-2">{{ shop_name }}</h6>
+                    <p class="small mb-1">{{ shop_address }}</p>
+                    <p class="small text-secondary">Car roof lining &amp; headliner repair &middot; Same-day express slots available</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white mb-2">Get In Touch</h6>
+                    <p class="small mb-1"><a href="tel:{{ shop_phone_display }}">📞 {{ shop_phone_display }}</a></p>
+                    <p class="small mb-1"><a href="{{ shop_whatsapp_general_url }}" target="_blank">💬 Chat on WhatsApp</a></p>
+                    <p class="small mb-1"><a href="{{ shop_facebook_url }}" target="_blank">📘 Facebook</a></p>
+                    <p class="small mb-0"><a href="{{ shop_maps_url }}" target="_blank">📍 Get Directions</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white mb-2">Book Online</h6>
+                    <p class="small mb-2">Pick a time slot, tell us about your vehicle, and we'll confirm your booking on WhatsApp.</p>
+                    <a href="{% url 'bookings:book' %}" class="btn btn-amber btn-sm">Book Your Slot</a>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <p class="small text-secondary mb-0 text-center">&copy; {% now "Y" %} {{ shop_name }} &middot; {{ shop_location }}</p>
+        </div>
+    </footer>
+
+    <a href="{{ shop_whatsapp_general_url }}" target="_blank" class="whatsapp-float" aria-label="Chat on WhatsApp">💬</a>
+
+    <div class="mobile-cta-bar d-md-none">
+        <a href="tel:{{ shop_phone_display }}" class="mobile-cta-btn mobile-cta-call">
+            <span>📞</span> Call
+        </a>
+        <a href="{% url 'bookings:book' %}" class="mobile-cta-btn mobile-cta-book">
+            <span>📅</span> Book Now
+        </a>
+    </div>
+
+    <div class="lightbox-overlay" id="lightboxOverlay" onclick="if(event.target===this) closeLightbox();">
+        <div class="lightbox-frame">
+            <button type="button" class="lightbox-close" onclick="closeLightbox()" aria-label="Close image">&times;</button>
+            <img id="lightboxImage" src="" alt="">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Gallery lightbox: opens the full-size photo when a gallery image is clicked.
+        function openLightbox(src, caption) {
+            var overlay = document.getElementById('lightboxOverlay');
+            var img = document.getElementById('lightboxImage');
+            var captionEl = document.getElementById('lightboxCaption');
+            img.src = src;
+            img.alt = caption || 'Gallery photo';
+            captionEl.textContent = caption || '';
+            overlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            var overlay = document.getElementById('lightboxOverlay');
+            overlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+            document.getElementById('lightboxImage').src = '';
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>

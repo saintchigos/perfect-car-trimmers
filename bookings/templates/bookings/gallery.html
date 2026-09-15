@@ -1,0 +1,56 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Our Work · {{ shop_name }}{% endblock %}
+
+{% block content %}
+<section class="section-dark py-5">
+    <div class="container text-center">
+        <div class="section-eyebrow">The Craft</div>
+        <h1 style="font-size: clamp(1.9rem, 4vw, 2.6rem);">Our Work</h1>
+        <p class="hero-sub mx-auto">A look at recent roof lining &amp; headliner repairs completed in the shop.</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    {% if items %}
+    <div class="row g-3">
+        {% for item in items %}
+        <div class="col-6 col-md-4">
+            {% if item.before_image %}
+            <div class="row g-1">
+                <div class="col-6">
+                    <div class="gallery-item" onclick="openLightbox('{{ item.before_image.url }}', 'Before · {{ item.vehicle_type|default:'Repair'|escapejs }}')">
+                        <span class="gallery-tag tag-before">Before</span>
+                        <span class="gallery-zoom-hint">🔍</span>
+                        <img src="{{ item.before_image.url }}" alt="Before repair">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="gallery-item" onclick="openLightbox('{{ item.after_image.url }}', 'After · {{ item.vehicle_type|default:'Repair'|escapejs }}')">
+                        <span class="gallery-tag tag-after">After</span>
+                        <span class="gallery-zoom-hint">🔍</span>
+                        <img src="{{ item.after_image.url }}" alt="After repair">
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="gallery-item" onclick="openLightbox('{{ item.after_image.url }}', '{{ item.caption|default:item.vehicle_type|default:'Completed work'|escapejs }}')">
+                <span class="gallery-tag tag-after">Completed</span>
+                <span class="gallery-zoom-hint">🔍</span>
+                <img src="{{ item.after_image.url }}" alt="{{ item.caption|default:'Completed work' }}">
+                <div class="gallery-caption">{{ item.vehicle_type|default:"Completed Repair" }}{% if item.fabric_option %} &middot; {{ item.fabric_option.name }}{% endif %}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">Gallery items will appear here once added in the admin panel.</p>
+    {% endif %}
+
+    <div class="text-center mt-5">
+        <h4 style="font-size: 1.3rem;">Like what you see?</h4>
+        <a href="{% url 'bookings:book' %}" class="btn btn-amber btn-lg mt-2">Book Your Slot</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Book a Slot · {{ shop_name }}{% endblock %}
+
+{% block content %}
+<section class="section-dark py-5">
+    <div class="container text-center">
+        <div class="section-eyebrow">Book Online</div>
+        <h1 style="font-size: clamp(1.9rem, 4vw, 2.6rem);">Book Your Repair Slot</h1>
+        <p class="hero-sub mx-auto">Fill in your details below — we'll confirm your booking and send you a WhatsApp message with directions.</p>
+    </div>
+</section>
+
+<div class="container py-5" style="max-width: 680px;">
+    <div class="booking-form-card">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.website }}
+
+            {% if form.errors %}
+            <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+                <span>⚠️</span>
+                <div>
+                    <strong>Please check the highlighted fields below.</strong>
+                    {% if form.non_field_errors %}
+                    <div class="small mt-1">{{ form.non_field_errors|striptags }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mono text-uppercase small text-muted mb-2" style="letter-spacing: 0.08em;">Your Details</div>
+            <hr class="stitch">
+            <div class="mb-3">
+                <label class="form-label">{{ form.customer_name.label }}</label>
+                {{ form.customer_name }}
+                {% if form.customer_name.errors %}<div class="text-danger small mt-1">{{ form.customer_name.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ form.phone_number.label }}</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}<div class="text-danger small mt-1">{{ form.phone_number.errors|striptags }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ form.email.label }} <span class="text-muted">(optional)</span></label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="mono text-uppercase small text-muted mb-2 mt-4" style="letter-spacing: 0.08em;">Vehicle</div>
+            <hr class="stitch">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Make</label>
+                    {{ form.vehicle_make }}
+                    {% if form.vehicle_make.errors %}<div class="text-danger small mt-1">{{ form.vehicle_make.errors|striptags }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Model <span class="text-muted">(optional)</span></label>
+                    {{ form.vehicle_model }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Photo of the damage <span class="text-muted">(optional)</span></label>
+                {{ form.damage_photo }}
+                {% if form.damage_photo.errors %}<div class="text-danger small mt-1">{{ form.damage_photo.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Describe the issue <span class="text-muted">(optional)</span></label>
+                {{ form.damage_description }}
+            </div>
+
+            <div class="mono text-uppercase small text-muted mb-2 mt-4" style="letter-spacing: 0.08em;">Booking</div>
+            <hr class="stitch">
+            <div class="mb-3">
+                <label class="form-label">Available slot</label>
+                {{ form.timeslot }}
+                {% if form.timeslot.errors %}<div class="text-danger small mt-1">{{ form.timeslot.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fabric / style upgrade <span class="text-muted">(optional)</span></label>
+                {{ form.fabric_option }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">How would you like to bring the vehicle in?</label>
+                {{ form.service_mode }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Pick-up / on-site location <span class="text-muted">(if applicable)</span></label>
+                {{ form.location_notes }}
+            </div>
+            <div class="form-check mb-3">
+                {{ form.deposit_required }}
+                <label class="form-check-label small" for="{{ form.deposit_required.id_for_label }}">
+                    I'd like to pay a small deposit to lock in my slot
+                </label>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Proof of payment <span class="text-muted">(optional — if you've already paid a deposit by EFT)</span></label>
+                {{ form.proof_of_payment }}
+                {% if form.proof_of_payment.errors %}<div class="text-danger small mt-1">{{ form.proof_of_payment.errors|striptags }}</div>{% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-amber btn-lg w-100">Confirm Booking</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

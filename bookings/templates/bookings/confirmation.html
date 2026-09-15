@@ -1,0 +1,26 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Booking Confirmed · {{ shop_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="max-width: 580px;">
+    <div class="fs-1 mb-2">✅</div>
+    <h2 style="font-size: 1.8rem;">Booking Received!</h2>
+    <p class="text-muted mb-4">Thanks {{ booking.customer_name }} — your slot is pending confirmation. Tap below to send your details to us on WhatsApp so we can lock it in instantly.</p>
+
+    <div class="contact-card text-start mb-4">
+        <dl class="row mb-0 small">
+            <dt class="col-5">Vehicle</dt><dd class="col-7">{{ booking.vehicle_make }} {{ booking.vehicle_model }}</dd>
+            <dt class="col-5">Slot</dt><dd class="col-7">{{ booking.timeslot }}</dd>
+            {% if booking.fabric_option %}
+            <dt class="col-5">Fabric option</dt><dd class="col-7">{{ booking.fabric_option.name }}</dd>
+            {% endif %}
+            <dt class="col-5">Service type</dt><dd class="col-7">{{ booking.get_service_mode_display }}</dd>
+            <dt class="col-5">Status</dt><dd class="col-7"><span class="badge badge-amber">{{ booking.get_status_display }}</span></dd>
+        </dl>
+    </div>
+
+    <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-amber btn-lg w-100 mb-2">💬 Send Details on WhatsApp</a>
+    <a href="{% url 'bookings:home' %}" class="btn btn-outline-dark w-100">Back to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Staff Dashboard · {{ shop_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="mb-0">Staff Dashboard</h2>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <a href="{% url 'bookings:staff_gallery' %}" class="btn btn-sm btn-outline-dark">📸 Manage Photos</a>
+            <div class="text-muted small">Logged in as {{ request.user.username }} · <a href="{% url 'admin:index' %}">Full admin</a></div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="slot-ticket">
+                <div class="fs-3 fw-bold mono">{{ stats.pending }}</div>
+                <div class="small text-muted">Pending confirmation</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="slot-ticket">
+                <div class="fs-3 fw-bold mono">{{ stats.confirmed_today }}</div>
+                <div class="small text-muted">Confirmed for today</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="slot-ticket">
+                <div class="fs-3 fw-bold mono">{{ stats.deposit_pending }}</div>
+                <div class="small text-muted">Deposits outstanding</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="slot-ticket">
+                <div class="fs-3 fw-bold mono">{{ stats.total_upcoming }}</div>
+                <div class="small text-muted">Total upcoming bookings</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <span class="small text-muted me-2">Filter by status:</span>
+        <a href="{% url 'bookings:staff_dashboard' %}" class="btn btn-sm {% if not status_filter %}btn-dark{% else %}btn-outline-secondary{% endif %}">All</a>
+        {% for value, label in status_choices %}
+        <a href="?status={{ value }}" class="btn btn-sm {% if status_filter == value %}btn-dark{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+        {% endfor %}
+    </div>
+
+    <h5 class="mt-4">Today's Schedule — {{ today|date:"l, d F Y" }}</h5>
+    {% include 'bookings/_booking_table.html' with bookings=todays_bookings empty_message="No bookings scheduled for today." %}
+
+    <h5 class="mt-5">Upcoming Bookings</h5>
+    {% include 'bookings/_booking_table.html' with bookings=upcoming_bookings empty_message="No upcoming bookings." %}
+</div>
+{% endblock %}

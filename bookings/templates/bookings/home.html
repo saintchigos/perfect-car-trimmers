@@ -1,0 +1,168 @@
+{% extends 'bookings/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-workshop">
+    {% if featured_gallery %}
+    <div class="hero-mosaic">
+        {% for item in featured_gallery %}
+        <img src="{{ item.after_image.url }}" alt="">
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container hero-content text-center py-4">
+        <div class="hero-eyebrow">Midrand &middot; Same-Day Express Available</div>
+        <h1 class="hero-headline mx-auto">{{ site_content.hero_heading }} <span class="accent">{{ site_content.hero_heading_accent }}</span></h1>
+        <p class="hero-sub mx-auto">{{ site_content.hero_subheading }}</p>
+
+        {% if site_content.show_google_rating %}
+        <div class="d-flex justify-content-center mt-3">
+            <a href="{{ site_content.google_review_url|default:shop_maps_url }}" target="_blank" class="rating-badge text-decoration-none">
+                <span class="stars">★★★★★</span>
+                <span class="score">{{ site_content.google_rating }}</span>
+                <span class="count">on Google{% if site_content.google_review_count %} &middot; {{ site_content.google_review_count }} reviews{% endif %}</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center mt-4">
+            <a href="{% url 'bookings:book' %}" class="btn btn-amber btn-lg px-4">Book Your Slot Now</a>
+            <a href="{{ shop_whatsapp_general_url }}" target="_blank" class="btn btn-outline-light btn-lg px-4">💬 WhatsApp Us</a>
+        </div>
+        <div class="trust-strip justify-content-center">
+            <span>⚡ Same-Day 3-Hour Express</span>
+            <span>🛠️ Pick-up &amp; On-Site Repairs</span>
+            <span>📍 70 Richards Dr, Midrand</span>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="section-eyebrow text-center">What We Offer</div>
+    <h2 class="text-center mb-4" style="font-size: 1.9rem;">Built Around Getting You Back On The Road</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="icon-badge">🗓️</div>
+                <h5>Direct Slot Booking</h5>
+                <p>Pick your day and time — Same-Day Express or Morning Drop-off. No back-and-forth calls.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card accent-teal">
+                <div class="icon-badge">🛠️</div>
+                <h5>Pick-up &amp; On-Site Repairs</h5>
+                <p>Working professionals in and around Midrand can request pick-up or on-site service.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card accent-gold">
+                <div class="icon-badge">🎨</div>
+                <h5>Fabric &amp; Style Upgrades</h5>
+                <p>Choose Standard OEM, Blackout, Alcantara or contrast stitching when you book.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if upcoming_slots %}
+<section class="container pb-5">
+    <div class="section-eyebrow">Live Availability</div>
+    <h3 class="mb-3" style="font-size: 1.5rem;">Next Available Slots</h3>
+    <div class="row g-3">
+        {% for slot in upcoming_slots %}
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="slot-ticket {% if slot.is_full %}is-full{% endif %}">
+                <div class="slot-date">{{ slot.date|date:"D d M" }}</div>
+                <div class="slot-time">{{ slot.start_time|time:"H:i" }}–{{ slot.end_time|time:"H:i" }}</div>
+                <span class="badge badge-amber mt-2 d-inline-block">
+                    {% if slot.is_full %}Full{% else %}{{ slot.get_slot_type_display }}{% endif %}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if featured_gallery %}
+<section class="section-dark py-5">
+    <div class="container">
+        <div class="section-eyebrow text-center">The Craft</div>
+        <h2 class="text-center mb-4" style="font-size: 1.9rem;">Recent Work</h2>
+        <div class="row g-3">
+            {% for item in featured_gallery %}
+            <div class="col-6 col-md-3">
+                <div class="gallery-item" onclick="openLightbox('{{ item.after_image.url }}', '{{ item.caption|default:item.vehicle_type|default:'Completed repair'|escapejs }}')">
+                    <span class="gallery-tag tag-after">After</span>
+                    <span class="gallery-zoom-hint">🔍</span>
+                    <img src="{{ item.after_image.url }}" alt="{{ item.caption|default:'Completed repair' }}">
+                    <div class="gallery-caption">{{ item.vehicle_type|default:"Completed Repair" }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'bookings:gallery' %}" class="btn btn-outline-light">See Full Gallery</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="container py-5">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6 {% if not site_content.about_image %}order-lg-2{% endif %}">
+            <div class="section-eyebrow">Our Story</div>
+            <h2 class="mb-3" style="font-size: 1.9rem;">{{ site_content.about_heading }}</h2>
+            <p class="text-muted" style="font-size: 1.05rem;">{{ site_content.about_text|linebreaksbr }}</p>
+            {% if site_content.show_google_rating %}
+            <div class="mt-3 d-flex align-items-center gap-2">
+                <span style="color: var(--gold); font-size: 1.1rem;">★★★★★</span>
+                <strong>{{ site_content.google_rating }}</strong>
+                <span class="text-muted small">rated on Google{% if site_content.google_review_count %} by {{ site_content.google_review_count }} happy customers{% endif %}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            {% if site_content.about_image %}
+            <div class="about-card p-0">
+                <img src="{{ site_content.about_image.url }}" alt="{{ site_content.about_heading }}">
+            </div>
+            {% elif featured_gallery %}
+            <div class="row g-2">
+                {% for item in featured_gallery|slice:":2" %}
+                <div class="col-6"><div class="gallery-item" onclick="openLightbox('{{ item.after_image.url }}', '{{ item.vehicle_type|default:'Completed repair'|escapejs }}')"><span class="gallery-zoom-hint">🔍</span><img src="{{ item.after_image.url }}" alt=""></div></div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="container py-5" id="visit-us">
+    <div class="section-eyebrow">Get In Touch</div>
+    <h2 class="mb-4" style="font-size: 1.9rem;">Visit Us In Midrand</h2>
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="contact-card mb-3">
+                <div class="small text-uppercase mono text-muted mb-1">Address</div>
+                <a href="{{ shop_maps_url }}" target="_blank">{{ shop_address }}</a>
+            </div>
+            <div class="contact-card mb-3">
+                <div class="small text-uppercase mono text-muted mb-1">Phone / WhatsApp</div>
+                <a href="tel:{{ shop_phone_display }}">{{ shop_phone_display }}</a>
+            </div>
+            <div class="contact-card mb-3">
+                <div class="small text-uppercase mono text-muted mb-1">Facebook</div>
+                <a href="{{ shop_facebook_url }}" target="_blank">Follow us for updates</a>
+            </div>
+            <a href="{{ shop_whatsapp_general_url }}" target="_blank" class="btn btn-amber w-100">💬 Message Us on WhatsApp</a>
+        </div>
+        <div class="col-lg-7">
+            <div class="map-frame">
+                <iframe src="{{ shop_maps_embed_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Shop location map"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

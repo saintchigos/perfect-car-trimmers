@@ -1,0 +1,71 @@
+{% if bookings %}
+<div class="table-responsive mb-4">
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr class="small text-muted text-uppercase">
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Slot</th>
+                <th>Service</th>
+                <th>Fabric</th>
+                <th>Status</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>
+                    {{ booking.customer_name }}<br>
+                    <a href="tel:{{ booking.phone_number }}" class="small text-muted">{{ booking.phone_number }}</a>
+                </td>
+                <td>{{ booking.vehicle_make }} {{ booking.vehicle_model }}
+                    {% if booking.damage_photo %}
+                    <br><a href="{{ booking.damage_photo.url }}" target="_blank" class="small">📷 Damage photo</a>
+                    {% endif %}
+                </td>
+                <td class="small">{{ booking.timeslot }}</td>
+                <td class="small">{{ booking.get_service_mode_display }}{% if booking.location_notes %}<br><span class="text-muted">{{ booking.location_notes }}</span>{% endif %}</td>
+                <td class="small">{{ booking.fabric_option.name|default:"—" }}</td>
+                <td>
+                    <span class="badge
+                        {% if booking.status == 'PENDING' %}bg-warning text-dark
+                        {% elif booking.status == 'CONFIRMED' %}bg-success
+                        {% elif booking.status == 'COMPLETED' %}bg-primary
+                        {% else %}bg-secondary{% endif %}">
+                        {{ booking.get_status_display }}
+                    </span>
+                    {% if booking.deposit_required %}
+                    <div class="small mt-1">Deposit: {% if booking.deposit_paid %}<span class="text-success">Paid</span>{% else %}<span class="text-danger">Unpaid</span>{% endif %}</div>
+                    {% if booking.proof_of_payment %}
+                    <div class="small"><a href="{{ booking.proof_of_payment.url }}" target="_blank">🧾 View proof of payment</a></div>
+                    {% else %}
+                    <div class="small text-muted">No proof uploaded</div>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'bookings:update_booking_status' booking.pk %}" class="d-flex gap-1 align-items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <select name="status" class="form-select form-select-sm" style="width: auto;">
+                            {% for value, label in booking.Status.choices %}
+                            <option value="{{ value }}" {% if value == booking.status %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if booking.deposit_required %}
+                        <div class="form-check">
+                            <input type="checkbox" name="deposit_paid" class="form-check-input" {% if booking.deposit_paid %}checked{% endif %}>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-sm btn-outline-dark">Save</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted small">{{ empty_message }}</p>
+{% endif %}

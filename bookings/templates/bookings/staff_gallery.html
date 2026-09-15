@@ -1,0 +1,88 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Manage Gallery · {{ shop_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-0">Manage Gallery</h2>
+            <div class="text-muted small">Add or remove before/after work photos — changes show up on the public gallery right away.</div>
+        </div>
+        <a href="{% url 'bookings:staff_dashboard' %}" class="btn btn-sm btn-outline-secondary">&larr; Back to Dashboard</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="booking-form-card mb-5">
+        <div class="mono text-uppercase small text-muted mb-2" style="letter-spacing: 0.08em;">Add a Photo</div>
+        <hr class="stitch">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger">Please check the highlighted fields below.</div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Vehicle type <span class="text-muted">(optional)</span></label>
+                    {{ form.vehicle_type }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caption <span class="text-muted">(optional)</span></label>
+                    {{ form.caption }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Before photo <span class="text-muted">(optional)</span></label>
+                    {{ form.before_image }}
+                    {% if form.before_image.errors %}<div class="text-danger small mt-1">{{ form.before_image.errors|striptags }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">After photo <span class="text-muted">(required)</span></label>
+                    {{ form.after_image }}
+                    {% if form.after_image.errors %}<div class="text-danger small mt-1">{{ form.after_image.errors|striptags }}</div>{% endif %}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fabric / style option <span class="text-muted">(optional)</span></label>
+                {{ form.fabric_option }}
+            </div>
+            <div class="form-check mb-4">
+                {{ form.featured }}
+                <label class="form-check-label small" for="{{ form.featured.id_for_label }}">
+                    Feature on homepage "Recent Work"
+                </label>
+            </div>
+            <button type="submit" class="btn btn-amber">Add to Gallery</button>
+        </form>
+    </div>
+
+    <div class="mono text-uppercase small text-muted mb-2" style="letter-spacing: 0.08em;">Current Photos ({{ items|length }})</div>
+    <hr class="stitch">
+    {% if items %}
+    <div class="row g-3">
+        {% for item in items %}
+        <div class="col-6 col-md-3">
+            <div class="gallery-item mb-2" onclick="openLightbox('{{ item.after_image.url }}', '{{ item.caption|default:item.vehicle_type|default:'Gallery photo'|escapejs }}')">
+                {% if item.featured %}<span class="gallery-tag tag-after">Featured</span>{% endif %}
+                <span class="gallery-zoom-hint">🔍</span>
+                <img src="{{ item.after_image.url }}" alt="{{ item.caption|default:'Gallery photo' }}">
+                <div class="gallery-caption">{{ item.vehicle_type|default:"Untitled" }}</div>
+            </div>
+            <form method="post" action="{% url 'bookings:staff_gallery_delete' item.pk %}" onsubmit="return confirm('Remove this photo from the gallery?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-dark w-100">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted small">No photos yet — add one above.</p>
+    {% endif %}
+</div>
+{% endblock %}
