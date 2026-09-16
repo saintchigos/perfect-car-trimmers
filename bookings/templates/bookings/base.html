@@ -6,8 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ shop_name }} · Car Roof Lining Repair, Midrand{% endblock %}</title>
     <meta name="description" content="Car roof lining & headliner repair in Midrand. Book a slot online, get an instant quote, message us directly on WhatsApp.">
+    <link rel="canonical" href="{{ shop_site_url }}{{ request.path }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ shop_name }}">
+    <meta property="og:title" content="{% block og_title %}{{ shop_name }} · Car Roof Lining Repair, Midrand{% endblock %}">
+    <meta property="og:description" content="Car roof lining & headliner repair in Midrand. Book a slot online, get an instant quote, message us directly on WhatsApp.">
+    <meta property="og:url" content="{{ shop_site_url }}{{ request.path }}">
+    <meta property="og:image" content="{{ shop_site_url }}/media/gallery/after/completed_work_1.jpg">
+    <meta property="og:locale" content="en_ZA">
     <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
     <meta name="theme-color" content="#0a1e42">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutomotiveBusiness",
+      "name": "{{ shop_name|escapejs }}",
+      "url": "{{ shop_site_url|escapejs }}",
+      "telephone": "{{ shop_phone_display|escapejs }}",
+      "priceRange": "R450 - R4500",
+      "image": "{{ shop_site_url|add:"/media/gallery/after/completed_work_1.jpg"|escapejs }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ shop_address|escapejs }}",
+        "addressLocality": "{{ shop_location|escapejs }}",
+        "addressCountry": "ZA"
+      },
+      "hasMap": "{{ shop_maps_url|escapejs }}",
+      "sameAs": "{{ shop_facebook_url|escapejs }}"
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">

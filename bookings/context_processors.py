@@ -20,4 +20,5 @@ def shop_info(request):
         'shop_whatsapp_general_url': (
             f"https://wa.me/{settings.SHOP_WHATSAPP_NUMBER}?text={quote(general_message)}"
         ),
+        'shop_site_url': settings.SHOP_SITE_URL,
     }

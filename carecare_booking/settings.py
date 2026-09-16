@@ -197,4 +197,9 @@ SHOP_FACEBOOK_URL = "https://www.facebook.com/share/1DM46Yx2Zs/"
 SHOP_MAPS_URL = "https://maps.app.goo.gl/NBWoXUrVr2kTDT5H9?g_st=awb"
 SHOP_MAPS_EMBED_URL = "https://www.google.com/maps?q=70+Richards+Drive,+Midrand,+2000&output=embed"
 
+# Public base URL of the live site — used for canonical links, sitemap,
+# robots.txt and structured data. Override via DJANGO_SITE_URL in .env if the
+# site ever moves to a real domain.
+SHOP_SITE_URL = os.environ.get('DJANGO_SITE_URL', 'https://saintchigos.pythonanywhere.com').rstrip('/')
+
 LOGIN_URL = f'/{ADMIN_URL}login/'

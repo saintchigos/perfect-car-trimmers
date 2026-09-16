@@ -19,7 +19,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from . import seo_views
+
 urlpatterns = [
+    path('robots.txt', seo_views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', seo_views.sitemap_xml, name='sitemap_xml'),
     path(settings.ADMIN_URL, admin.site.urls),
     path('', include('bookings.urls')),
 ]
